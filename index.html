@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Åk 6: Naturresurser v.42-v.43</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            green: '#1a4731',    // Mörk skogsgrön (Topp och text)
+                            lightGreen: '#2c6b4f', // Ljusare grön
+                            beige: '#f3eed9',    // Huvudbakgrund
+                            card: '#fdfbf7',     // Ljusa kort
+                            brown: '#8c5e3c',    // Jordbrun för accenter och sektioner
+                            lightBrown: '#d5b99f' // Ljusare brun
+                        }
+                    },
+                    borderRadius: {
+                        '4xl': '2.5rem',
+                        '5xl': '3.5rem',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            scroll-behavior: smooth;
+            background-color: #f3eed9; /* Brand beige */
+            color: #1a4731; /* Brand green */
+        }
+        
+        .glass-card {
+            background: rgba(253, 251, 247, 0.85);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Flip card CSS */
+        .flip-card {
+            background-color: transparent;
+            height: 180px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 15px rgba(26, 71, 49, 0.05);
+        }
+        .flip-card-front {
+            background-color: #fdfbf7;
+            color: #1a4731;
+            border: 2px solid #e2dcd0;
+        }
+        .flip-card-back {
+            background-color: #1a4731;
+            color: #fdfbf7;
+            transform: rotateY(180deg);
+            font-size: 0.95rem;
+            border: 2px solid #1a4731;
+        }
+
+        /* Anpassad checkbox för kart-listan */
+        .map-checkbox {
+            appearance: none;
+            background-color: transparent;
+            margin: 0;
+            font: inherit;
+            color: currentColor;
+            width: 1.25em;
+            height: 1.25em;
+            border: 2px solid #8c5e3c;
+            border-radius: 0.25em;
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .map-checkbox::before {
+            content: "";
+            width: 0.65em;
+            height: 0.65em;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em white;
+            background-color: white;
+            transform-origin: center;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+        .map-checkbox:checked {
+            background-color: #8c5e3c;
+        }
+        .map-checkbox:checked::before {
+            transform: scale(1);
+        }
+        .map-checkbox:checked + label {
+            text-decoration: line-through;
+            color: #a39c93;
+            opacity: 0.7;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="antialiased font-sans flex flex-col min-h-screen">
+
+    <nav class="sticky top-0 z-50 glass-card border-b border-brand-beige/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-[70px]">
+                <div class="flex items-center">
+                    <i class="fa-solid fa-leaf text-brand-green text-2xl mr-3"></i>
+                    <span class="font-bold text-xl tracking-tight hidden sm:block">SO Geografi Åk 6</span>
+                </div>
+                <div class="flex items-center space-x-1 sm:space-x-6 overflow-x-auto no-scrollbar">
+                    <a href="#intro" class="text-brand-green/70 hover:text-brand-green px-2 py-2 text-sm font-semibold transition-colors">Start</a>
+                    <a href="#del1" class="text-brand-green/70 hover:text-brand-green px-2 py-2 text-sm font-semibold transition-colors">Texter</a>
+                    <a href="#sammanfattning" class="text-brand-green/70 hover:text-brand-green px-2 py-2 text-sm font-semibold transition-colors">Sammanfattning</a>
+                    <a href="#uppgifter" class="bg-brand-green text-white hover:bg-brand-lightGreen px-5 py-2.5 rounded-full text-sm font-bold shadow-md transition-all transform hover:scale-105">Uppgifter</a>
+                </div>
+            </div>
+        </div>
+        <div class="h-1.5 bg-brand-beige w-full">
+            <div id="reading-progress" class="h-1.5 bg-brand-brown w-0 transition-all duration-700 ease-out"></div>
+        </div>
+    </nav>
+
+    <header id="intro" class="bg-brand-green text-brand-card pt-16 pb-24 px-4 sm:px-6 rounded-b-[3rem] sm:rounded-b-[5rem] shadow-xl relative overflow-hidden">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12">
+            <div class="lg:w-1/2 z-10">
+                <span class="text-brand-lightBrown font-bold uppercase tracking-wider text-sm mb-4 block">Geografi, åk 6 · vecka 42–43</span>
+                <h1 class="text-5xl sm:text-7xl font-extrabold tracking-tight mb-6 leading-tight">
+                    Naturresurser <br>
+                    <span class="text-brand-beige font-light text-3xl sm:text-5xl">Det jorden ger oss</span>
+                </h1>
+                <p class="text-lg sm:text-xl text-brand-beige/80 mb-8 max-w-lg leading-relaxed">
+                    Fyra naturresurser i ett och samma landskap: vattnet i floden, odlingsmarken, skogen och metallen i berget.
+                </p>
+                <div class="flex gap-4">
+                    <a href="#del1" class="bg-brand-beige text-brand-green font-bold py-3 px-8 rounded-full hover:bg-white transition-colors shadow-lg">Börja läsa texten</a>
+                </div>
+            </div>
+
+            <div class="lg:w-1/2 w-full relative">
+                <!-- Bilden laddas nu från din lokala fil -->
+                <img src="Gemini_Generated_Image_ilc6zhilc6zhilc6.jpeg" alt="Landskap med naturresurser" class="w-full h-[400px] lg:h-[500px] object-cover rounded-[3rem] lg:rounded-bl-[8rem] lg:rounded-tr-[8rem] shadow-2xl border-4 border-brand-green/20">
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-16 grid gap-12">
+        
+        <div class="grid lg:grid-cols-3 gap-6 -mt-32 relative z-20">
+            
+            <!-- Inledningstext -->
+            <div class="lg:col-span-3 bg-brand-card p-8 rounded-3xl shadow-lg border border-brand-green/10 mb-2">
+                <p class="text-xl leading-relaxed text-brand-green">
+                    Titta dig omkring i klassrummet. Bänken du sitter vid, fönstret, mobilen som du lämnat in, vattnet i kranen och maten i matsalen – allt kommer från början från naturen. Saker som människor tar från naturen och har nytta av kallas <strong>naturresurser</strong>. Den här texten handlar om fyra viktiga naturresurser: vatten, odlingsmark, skog och mineraler.
+                </p>
+                <p class="text-lg leading-relaxed text-brand-green/80 mt-4">
+                    Du kommer att få läsa om var på jorden de olika resurserna finns, varför de finns just där, och vad som händer med landskapet och med människorna när vi använder dem. Det är viktig kunskap, eftersom naturresurserna är mycket ojämnt fördelade över jorden. Var du råkar bo påverkar vad du kan odla, om du har rent vatten, och vad du kan tjäna pengar på. Många av världens konflikter i dag handlar just om vem som ska få använda en naturresurs.
+                </p>
+            </div>
+
+            <!-- FAKTARUTA: Det här ska du lära dig -->
+            <div class="bg-brand-card p-8 rounded-3xl shadow-md border-t-4 border-brand-green">
+                <h3 class="text-xl font-bold mb-4 flex items-center text-brand-green"><i class="fa-solid fa-bullseye mr-3"></i> Det här ska du lära dig</h3>
+                <ul class="space-y-3 text-brand-green/80 font-medium">
+                    <li class="flex items-start"><i class="fa-solid fa-check text-brand-lightGreen mt-1 mr-2 shrink-0"></i> Vad en naturresurs är, och vilka fyra vi arbetar med: vatten, odlingsmark, skog och mineraler.</li>
+                    <li class="flex items-start"><i class="fa-solid fa-check text-brand-lightGreen mt-1 mr-2 shrink-0"></i> Var på jorden resurserna finns – och varför de finns just där.</li>
+                    <li class="flex items-start"><i class="fa-solid fa-check text-brand-lightGreen mt-1 mr-2 shrink-0"></i> Vad som händer med landskapet och med människorna när vi använder resurserna.</li>
+                    <li class="flex items-start"><i class="fa-solid fa-check text-brand-lightGreen mt-1 mr-2 shrink-0"></i> Var platserna vi tar upp ligger på kartan.</li>
+                </ul>
+            </div>
+            
+            <!-- Så här arbetar du med häftet -->
+            <div class="bg-brand-brown text-brand-card p-8 rounded-3xl shadow-md">
+                <h3 class="text-xl font-bold mb-4 flex items-center"><i class="fa-solid fa-list-check mr-3"></i> Så här arbetar du</h3>
+                <ul class="space-y-3 text-sm font-medium opacity-95">
+                    <li class="flex items-start"><span class="bg-white/20 rounded-full w-5 h-5 flex items-center justify-center mr-2 shrink-0 mt-0.5 text-xs">1</span> Läs veckans avsnitt i texten själv innan du börjar med uppgifterna.</li>
+                    <li class="flex items-start"><span class="bg-white/20 rounded-full w-5 h-5 flex items-center justify-center mr-2 shrink-0 mt-0.5 text-xs">2</span> Skriv alla svar i häftet, i hela meningar. Skriv så att någon som inte läst texten förstår.</li>
+                    <li class="flex items-start"><span class="bg-white/20 rounded-full w-5 h-5 flex items-center justify-center mr-2 shrink-0 mt-0.5 text-xs">3</span> Gör uppgifterna i ordningen A, B och sedan C.</li>
+                    <li class="flex items-start"><span class="bg-white/20 rounded-full w-5 h-5 flex items-center justify-center mr-2 shrink-0 mt-0.5 text-xs">4</span> Använd orden från begreppslistan när du skriver.</li>
+                    <li class="flex items-start"><span class="bg-white/20 rounded-full w-5 h-5 flex items-center justify-center mr-2 shrink-0 mt-0.5 text-xs">5</span> Fastnar du: läs frågan igen, leta i texten, räck sedan upp handen.</li>
+                    <li class="flex items-start"><span class="bg-white/20 rounded-full w-5 h-5 flex items-center justify-center mr-2 shrink-0 mt-0.5 text-xs">6</span> Blir du klar: öva på platserna eller utveckla B/C-svar.</li>
+                </ul>
+            </div>
+
+            <!-- Vad som händer sedan -->
+            <div class="bg-brand-card p-8 rounded-3xl shadow-md border-t-4 border-brand-brown">
+                <h3 class="text-xl font-bold mb-4 flex items-center text-brand-green"><i class="fa-regular fa-calendar-check mr-3"></i> Vad som händer sedan</h3>
+                <p class="text-brand-green/80 text-sm mb-4 leading-relaxed">
+                    Sista passet vecka 43 gör vi en kort diagnos på naturresurserna. Den sätter inget betyg – den visar dig och mig vad som sitter och vad vi behöver repetera. Efter höstlovet arbetar vi vidare med jordens klimat, och arbetsområdet avslutas med ett prov på sista SO-passet vecka 47.
+                </p>
+                <div class="bg-brand-beige/50 p-3 rounded-xl border border-brand-brown/20 text-sm font-bold text-brand-brown">
+                    <i class="fa-solid fa-triangle-exclamation mr-1"></i> Spara häftet! Du kommer att ha användning av det när du repeterar inför provet.
+                </div>
+            </div>
+        </div>
+
+        <section id="del1" class="scroll-mt-32">
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Del 1 Text -->
+                <div class="bg-brand-card p-8 md:p-10 rounded-[2rem] shadow-sm border border-brand-green/10 flex flex-col justify-between relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-brand-lightGreen/10 rounded-bl-full transition-transform group-hover:scale-110"></div>
+                    <div>
+                        <span class="inline-block bg-brand-green text-white text-xs font-bold px-3 py-1 rounded-full mb-4">DEL 1</span>
+                        <h2 class="text-3xl font-bold mb-6 text-brand-green">Vad är en naturresurs?</h2>
+                        
+                        <div class="space-y-4 text-brand-green/80 leading-relaxed z-10 relative">
+                            <p>En naturresurs är något som finns i naturen och som människor använder. Träden i skogen är en naturresurs. Vattnet i sjön är en naturresurs. Metallen i berget är en naturresurs. Också jorden som vi odlar i, solens värme och vinden räknas dit.</p>
+                            
+                            <p>När vi tar en naturresurs ur naturen för att tillverka något av den kallas den för en <strong class="text-brand-green">råvara</strong>. Ett träd är råvaran till en träbänk. Järnmalm ur ett berg är råvaran till stålet i en cykel. Nästan allt du använder under en dag har börjat som en råvara någonstans i naturen, ofta långt därifrån du bor.</p>
+                            
+                            <h3 class="text-xl font-bold text-brand-green mt-6 mb-2">Förnybara och icke-förnybara</h3>
+                            <p>Naturresurser delas in i två grupper. En <strong class="text-brand-green">förnybar resurs</strong> kan bildas på nytt. Ett träd som huggs ned kan ersättas av ett nytt träd, och regnet fyller på sjöar och floder. En <strong class="text-brand-green">icke-förnybar resurs</strong> bildas så långsamt att den i praktiken tar slut när vi använt den. Metaller, olja och kol har tagit miljoner år att bildas. Det som bränns upp i dag kommer inte tillbaka.</p>
+                            
+                            <p>Men förnybart betyder inte obegränsat. En skog växer bara tillbaka om man inte hugger ned mer än vad som hinner växa upp. Grundvattennivån kan sjunka om man pumpar upp mer vatten än vad som hinner bildas genom nederbörd. Skillnaden mellan de två grupperna handlar alltså om tid – hur snabbt naturen hinner skapa nytt.</p>
+                        </div>
+                    </div>
+                    <button onclick="markDone(1)" id="btn-del1" class="mt-8 py-3 px-6 bg-brand-beige text-brand-green font-bold rounded-xl hover:bg-brand-green hover:text-white transition-all border border-brand-green w-full sm:w-auto self-start z-10">
+                        Kryssa av Del 1
+                    </button>
+                </div>
+
+                <!-- Översiktsbild (Använder Gemini_Generated_Image_ilc6zhilc6zhilc6.jpeg) -->
+                <div class="rounded-[2rem] overflow-hidden shadow-md relative h-64 lg:h-auto">
+                    <img src="Gemini_Generated_Image_ilc6zhilc6zhilc6.jpeg" alt="Översikt landskap" class="absolute inset-0 w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-6">
+                        <p class="text-white text-sm font-medium">Fyra naturresurser i ett och samma landskap: vattnet i floden, odlingsmarken, skogen och metallen i berget.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="del2" class="scroll-mt-32">
+            <h2 class="text-4xl font-bold mb-8 text-brand-green flex items-center">
+                <span class="bg-brand-brown text-white text-sm font-bold px-3 py-1 rounded-full mr-4 mb-1 self-start shadow-sm">DEL 2</span> 
+                Vatten och odlingsmark
+            </h2>
+            
+            <div class="grid lg:grid-cols-2 gap-8">
+                
+                <!-- Vatten -->
+                <div class="bg-brand-card p-8 rounded-[2rem] shadow-sm border border-brand-green/10 flex flex-col">
+                    <div class="h-48 md:h-64 rounded-xl overflow-hidden mb-6 relative">
+                        <img src="Gemini_Generated_Image_ilc6zhilc6zhilc6 (1).jpeg" alt="Flod genom öken" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-brand-green"><i class="fa-solid fa-droplet text-blue-500 mr-2"></i> Vatten</h3>
+                    <div class="space-y-4 text-brand-green/80 flex-grow leading-relaxed">
+                        <p>Det mesta av jordens vatten finns i haven, och havsvatten är salt. Bara ungefär tre procent av allt vatten på jorden är <strong class="text-brand-green">sötvatten</strong>, alltså vatten utan havssalt, som efter rening kan användas till dricksvatten och odling. Större delen av det sötvattnet är dessutom fruset i glaciärer och i isen på Grönland och i Arktis. Det som blir kvar till människor är alltså en liten del av jordens vatten.</p>
+                        <p>Sötvattnet är också ojämnt fördelat. I Sverige regnar det över hela landet och vi har tusentals sjöar. I Sahara i norra Afrika kan det gå år mellan regnen. Därför blir floderna livsviktiga just där. Egypten är ett bra exempel: nästan hela landet är öken, och nästan alla egyptier bor i ett smalt bälte längs floden Nilen. Vattnet bestämmer var människorna bor.</p>
+                        <p>När vattnet inte räcker får det stora följder. Odlingarna ger mindre mat. Smutsigt vatten sprider sjukdomar. I många länder är det barn, oftast flickor, som går flera kilometer varje dag för att hämta vatten. Det är tid som de annars hade kunnat gå i skolan. Bristen på vatten handlar alltså inte bara om törst, utan också om hälsa och utbildning.</p>
+                        <p>Att använda vatten förändrar också landskapet. När floder däms upp för att ge vatten till åkrar eller för att producera el bildas stora konstgjorda sjöar, samtidigt som marken nedanför dammen får mindre vatten än förut. På vissa platser har så mycket vatten letts bort till bevattning av odlingar att floder och sjöar har krympt kraftigt, och landskapet runt omkring har blivit torrare.</p>
+                    </div>
+                </div>
+
+                <!-- Odlingsmark -->
+                <div class="bg-brand-card p-8 rounded-[2rem] shadow-sm border border-brand-green/10 flex flex-col">
+                    <div class="h-48 md:h-64 rounded-xl overflow-hidden mb-6 relative">
+                         <img src="Gemini_Generated_Image_ilc6zhilc6zhilc6 (2).jpeg" alt="Jordbrukslandskap" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-brand-green"><i class="fa-solid fa-seedling text-brand-lightGreen mr-2"></i> Odlingsmark</h3>
+                    <div class="space-y-4 text-brand-green/80 flex-grow leading-relaxed">
+                        <p>För att kunna odla behövs tre saker: bra jord, lagom mycket nederbörd och en tillräckligt lång växtsäsong. <strong class="text-brand-green">Växtsäsong</strong> är den del av året då det är varmt nog för att växter ska växa. Saknas någon av de tre sakerna blir det svårt att få skörd.</p>
+                        <p>Därför ser jordbruket olika ut på olika platser. I södra Sverige finns bra jord och en växtsäsong på flera månader, och där odlas vete, potatis och raps. I norra Sverige är somrarna för korta och svåra för spannmål, och där är det vanligare med djurhållning och skogsbruk. I södra och östra Asien faller stora mängder regn under en del av året, och där odlas ris. En gröda som behöver mycket vatten.</p>
+                        <p>Gemensamt för alla platser är att det är naturens förutsättningar som sätter gränserna. Vad människor odlar följer jorden, nederbörden och växtsäsongen. Det är bara gränserna som ligger på olika ställen. Därför liknar jordbruket i norra och södra Sverige varandra på en punkt, även om det som odlas är olika: på båda platserna bestäms valet av gröda av klimatet.</p>
+                        <p>Odlingsmark är också en resurs som kan förstöras. Om man odlar samma sak år efter år utan att ge tillbaka näring blir jorden mager. Om skyddande växter tas bort kan vind och regn föra bort det översta jordlagret, det som allt växer i. Det kallas <strong class="text-brand-green">jorderosion</strong>, och det är ett av de största problemen för jordbruket i världen.</p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="mt-8">
+                <button onclick="markDone(2)" id="btn-del2" class="py-3 px-8 bg-brand-beige text-brand-green font-bold rounded-xl hover:bg-brand-green hover:text-white transition-all border border-brand-green">
+                    Kryssa av Del 2
+                </button>
+            </div>
+        </section>
+
+        <section id="del3" class="scroll-mt-32">
+            <h2 class="text-4xl font-bold mb-8 text-brand-brown flex items-center">
+                 <span class="bg-brand-green text-white text-sm font-bold px-3 py-1 rounded-full mr-4 mb-1 self-start shadow-sm">DEL 3</span>
+                 Skog och mineraler
+            </h2>
+            
+            <div class="grid lg:grid-cols-2 gap-8">
+                
+                <!-- Skogen -->
+                <div class="bg-brand-card p-8 rounded-[2rem] shadow-sm border border-brand-brown/20 flex flex-col">
+                    <div class="h-48 md:h-64 rounded-xl overflow-hidden mb-6 relative">
+                        <img src="Gemini_Generated_Image_ilc6zhilc6zhilc6 (3).jpeg" alt="Barrskog" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-brand-brown"><i class="fa-solid fa-tree mr-2"></i> Skogen</h3>
+                    <div class="space-y-4 text-brand-green/80 flex-grow leading-relaxed">
+                        <p>Ungefär sjuttio procent av Sveriges landareal (landyta) är skog. Sverige ligger till stor del i det nordliga barrskogsbältet (Taigan), som sträcker sig genom Norge, Finland, Ryssland och Kanada, men här finns också lövskog och fjällbjörkskog. Gran och tall trivs där det är kallt och där växtsäsongen är kort. Närmare ekvatorn, där det är varmt och regnar mycket, växer i stället regnskog. De största regnskogarna finns i Amazonas i Brasilien och i Kongo i centrala Afrika.</p>
+                        <p>Skogen används till virke att bygga hus av, till papper och kartong, och till bränsle. För Sverige är skogen en av de allra viktigaste resurserna, och trävaror är en stor <strong class="text-brand-brown">exportvara</strong>. Men skogen är också ett hem för djur och växter, en plats där människor rör sig, och den tar upp koldioxid ur luften.</p>
+                        <p>I Amazonas huggs stora områden ned varje år, framför allt för att göra plats åt betesmark för kor och åt odlingar. Det kallas <strong class="text-brand-brown">avskogning</strong>. Följderna blir flera på en gång: djur och växter förlorar sina livsmiljöer, jorden spolas bort när trädens rötter inte längre håller kvar den, och mindre koldioxid tas upp ur luften. På många platser blir marken snabbt mindre bördig efter några år, särskilt om odlingen inte sköts på ett hållbart sätt.</p>
+                    </div>
+                </div>
+
+                <!-- Mineraler -->
+                <div class="bg-brand-card p-8 rounded-[2rem] shadow-sm border border-brand-brown/20 flex flex-col">
+                    <div class="h-48 md:h-64 rounded-xl overflow-hidden mb-6 relative">
+                        <img src="Gemini_Generated_Image_ilc6zhilc6zhilc6 (4).jpeg" alt="Gruva" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-brand-brown"><i class="fa-solid fa-gem mr-2"></i> Mineraler och metaller</h3>
+                    <div class="space-y-4 text-brand-green/80 flex-grow leading-relaxed">
+                        <p>Mineraler finns i berggrunden, men inte var som helst. De har bildats under mycket lång tid och sitter samlade på vissa platser. Därför har vissa länder gott om en metall som andra länder saknar helt.</p>
+                        <p>I Kiruna i norra Sverige finns en av världens största järnmalmsgruvor. Järnmalmen blir stål, som används till bilar, broar och byggnader. I Demokratiska republiken Kongo bryts mer än hälften av all kobolt i världen. Kobolt är en metall som behövs i batterier. Till exempel i mobiler, datorer och elbilar. Din mobiltelefon, som du lämnat in till din handledare, innehåller metaller från flera olika världsdelar.</p>
+                        <p><strong class="text-brand-brown">Gruvdrift</strong> förändrar landskapet mer än någon annan resursåtervinning. Berg sprängs bort, stora hål och högar av överbliven sten bildas, och vatten i området kan förorenas. I Kiruna har gruvan gått så djupt in under staden att marken riskerar att spricka. Därför flyttas hela stadens centrum till en ny plats några kilometer bort – hus, kyrka och invånare. Det är ett tydligt exempel på hur användningen av en naturresurs kan förändra både landskapet och människors vardag.</p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="mt-8">
+                <button onclick="markDone(3)" id="btn-del3" class="py-3 px-8 bg-brand-beige text-brand-brown font-bold rounded-xl hover:bg-brand-brown hover:text-white transition-all border border-brand-brown">
+                    Kryssa av Del 3
+                </button>
+            </div>
+        </section>
+
+        <section id="del4" class="scroll-mt-32">
+            <div class="bg-brand-brown text-brand-card p-8 md:p-12 rounded-[3rem] shadow-xl relative overflow-hidden">
+                <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/5 rounded-full blur-2xl"></div>
+                
+                <div class="grid lg:grid-cols-2 gap-12 items-center relative z-10">
+                    <div>
+                        <span class="inline-block bg-black/20 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">DEL 4</span>
+                        <h2 class="text-4xl font-bold mb-6 text-white">Vem vinner och vem förlorar?</h2>
+                        
+                        <p class="text-xl font-medium mb-6 leading-relaxed">
+                            När en naturresurs används påverkas alltid flera parter, och de påverkas inte på samma sätt. Därför räcker det sällan att fråga om något är bra eller dåligt. Man behöver fråga: <strong>bra för vem?</strong>
+                        </p>
+                        
+                        <div class="space-y-4 text-white/90 mb-8">
+                            <p>Tänk på gruvan i Kiruna. Företaget som äger gruvan tjänar pengar. Många i staden får jobb, och Sverige får skatteinkomster och en viktig exportvara. Samtidigt måste människor lämna sina hem när staden flyttas, renskötande samer i området kan få sina betesmarker uppdelade av gruvan och järnvägen, och naturen i området förändras för alltid. Samma händelse ser alltså helt olika ut beroende på vem man frågar.</p>
+                            
+                            <p>Samma mönster finns i Kongo. Koboltbrytningen ger arbete och inkomster till landet. En del av koboltet bryts i stora industrigruvor, en del i småskaliga gruvor där människor gräver med enkla verktyg. En del av den småskaliga gruvbrytningen är farlig och kan innebära mycket låga löner och bristande säkerhet, och en stor del av pengarna hamnar hos företag i andra länder. Vi som köper mobiler i Sverige får nytta av metallen, men det är människor i Kongo som lever med gruvans negativa följder.</p>
+                            
+                            <p class="p-4 bg-black/20 rounded-xl mt-4 border border-white/10">En sak är värd att lägga märke till: den som använder resursen och den som drabbas av hur den tas fram bor ofta i olika delar av världen. Det gör det lätt att glömma bort följderna. Ju längre bort en följd sker, desto svårare är den att se.</p>
+                        </div>
+                        
+                        <button onclick="markDone(4)" id="btn-del4" class="py-3 px-8 bg-brand-card text-brand-brown font-bold rounded-xl hover:bg-brand-beige transition-colors shadow-lg">
+                            Kryssa av sista delen
+                        </button>
+                    </div>
+
+                    <div class="flex flex-col gap-8">
+                        <div class="relative h-72 w-full rounded-3xl overflow-hidden shadow-2xl border-4 border-white/10">
+                            <!-- Bilden laddas nu från din lokala fil -->
+                            <img src="Gemini_Generated_Image_255do5255do5255d.jpeg" alt="Global Handel" class="w-full h-full object-cover">
+                        </div>
+                        
+                        <!-- Sammanfattande avslutning (Från originaltexten) -->
+                        <div class="bg-white/10 p-6 rounded-3xl border border-white/20">
+                            <h3 class="text-xl font-bold mb-3 text-white">Sammanfattande avslutning</h3>
+                            <p class="text-white/90 text-sm leading-relaxed">
+                                Naturresurser är det jorden ger oss: vatten, odlingsmark, skog och mineraler. De finns där de finns på grund av klimatet och berggrunden, och de är mycket ojämnt fördelade över jorden. Därför ser människors liv olika ut på olika platser – vad de odlar, vad de arbetar med och hur lätt de har att få rent vatten. När vi använder en resurs förändras landskapet, och några tjänar på det medan andra får betala priset. Att kunna se både var resurserna finns, varför de finns där och vem som påverkas av dem – det är kunskap du kommer att ha nytta av under hela geografikursen.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sammanfattning" class="bg-brand-green/10 p-8 md:p-12 rounded-4xl border border-brand-green/20">
+            <h2 class="text-3xl font-bold mb-6 text-brand-green flex items-center"><i class="fa-solid fa-list-ul mr-4"></i> Sammanfattning</h2>
+            <ul class="space-y-3 text-brand-green/80 font-medium">
+                <li class="flex items-start"><i class="fa-solid fa-angle-right mt-1 mr-3 text-brand-brown"></i> En naturresurs är något som finns i naturen och som människor använder. När den används för att tillverka något kallas den råvara.</li>
+                <li class="flex items-start"><i class="fa-solid fa-angle-right mt-1 mr-3 text-brand-brown"></i> Förnybara resurser som skog och vatten kan bildas på nytt. Icke-förnybara resurser som metaller och olja tar slut. Förnybart betyder inte obegränsat.</li>
+                <li class="flex items-start"><i class="fa-solid fa-angle-right mt-1 mr-3 text-brand-brown"></i> Bara en liten del av jordens vatten är sötvatten, och det är ojämnt fördelat. Därför bor nästan alla egyptier nära Nilen.</li>
+                <li class="flex items-start"><i class="fa-solid fa-angle-right mt-1 mr-3 text-brand-brown"></i> För att kunna odla behövs bra jord, lagom nederbörd och en tillräckligt lång växtsäsong. Därför odlas olika saker på olika platser.</li>
+                <li class="flex items-start"><i class="fa-solid fa-angle-right mt-1 mr-3 text-brand-brown"></i> Sverige ligger till stor del i det nordliga barrskogsbältet tillsammans med Finland, Ryssland och Kanada, men har också lövskog och fjällbjörkskog. Regnskogarna finns nära ekvatorn, i Amazonas och i Kongo.</li>
+                <li class="flex items-start"><i class="fa-solid fa-angle-right mt-1 mr-3 text-brand-brown"></i> Gruvdrift och avskogning förändrar landskapet kraftigt – Kiruna flyttar hela sitt centrum på grund av gruvan.</li>
+                <li class="flex items-start"><i class="fa-solid fa-angle-right mt-1 mr-3 text-brand-brown"></i> När en resurs används vinner några och förlorar andra. Fråga alltid: bra för vem?</li>
+            </ul>
+        </section>
+
+        <div class="grid lg:grid-cols-3 gap-8 mb-8">
+            
+            <section id="karta" class="lg:col-span-1 bg-brand-beige p-8 rounded-4xl shadow-inner border border-brand-brown/10 self-start">
+                <div class="flex items-center mb-6">
+                    <div class="bg-brand-brown text-white w-10 h-10 rounded-xl flex items-center justify-center mr-4 shadow-sm">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">Platser du ska kunna</h2>
+                </div>
+                <p class="text-sm text-brand-green/70 mb-6">Kryssa i platserna när du kan var de ligger på en karta. Använd <a href="https://www.google.com/maps" target="_blank" class="text-brand-lightGreen hover:text-brand-green font-bold underline underline-offset-2 decoration-2 transition-colors">Google Maps</a> (eller i din kartbok) för att ta reda på var de ligger. Dessa platser nämns i texten.</p>
+                
+                <div class="space-y-3 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+                    <div class="flex items-center bg-white p-3 rounded-xl shadow-sm"><input type="checkbox" id="m0" class="map-checkbox mr-3"><label for="m0" class="cursor-pointer font-medium select-none w-full">Världsdelarna och världshaven</label></div>
+                    <div class="flex items-center bg-white p-3 rounded-xl shadow-sm"><input type="checkbox" id="m1" class="map-checkbox mr-3"><label for="m1" class="cursor-pointer font-medium select-none w-full">Sverige, Norge, Finland</label></div>
+                    <div class="flex items-center bg-white p-3 rounded-xl shadow-sm"><input type="checkbox" id="m4" class="map-checkbox mr-3"><label for="m4" class="cursor-pointer font-medium select-none w-full">Kanada & Ryssland</label></div>
+                    <div class="flex items-center bg-white p-3 rounded-xl shadow-sm"><input type="checkbox" id="m5" class="map-checkbox mr-3"><label for="m5" class="cursor-pointer font-medium select-none w-full">Brasilien</label></div>
+                    <div class="flex items-center bg-white p-3 rounded-xl shadow-sm"><input type="checkbox" id="m8" class="map-checkbox mr-3"><label for="m8" class="cursor-pointer font-medium select-none w-full">Demokratiska republiken Kongo</label></div>
+                    <div class="flex items-center bg-white p-3 rounded-xl shadow-sm"><input type="checkbox" id="m7" class="map-checkbox mr-3"><label for="m7" class="cursor-pointer font-medium select-none w-full">Egypten</label></div>
+                    <div class="flex items-center bg-white p-3 rounded-xl shadow-sm"><input type="checkbox" id="m6" class="map-checkbox mr-3"><label for="m6" class="cursor-pointer font-medium select-none w-full">Amazonas & Amazonfloden</label></div>
+                    <div class="flex items-center bg-white p-3 rounded-xl shadow-sm"><input type="checkbox" id="m9" class="map-checkbox mr-3"><label for="m9" class="cursor-pointer font-medium select-none w-full">Sahara & Nilen</label></div>
+                    <div class="flex items-center bg-white p-3 rounded-xl shadow-sm"><input type="checkbox" id="m13" class="map-checkbox mr-3"><label for="m13" class="cursor-pointer font-medium select-none w-full">Kiruna</label></div>
+                </div>
+            </section>
+
+            <section id="begrepp" class="lg:col-span-2 bg-brand-card p-8 rounded-4xl shadow-sm border border-brand-green/5">
+                <div class="flex justify-between items-end mb-6">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-2">Begreppslista</h2>
+                        <p class="text-brand-green/70">Klicka på korten för att se förklaringen.</p>
+                    </div>
+                    <i class="fa-solid fa-layer-group text-3xl text-brand-beige"></i>
+                </div>
+                
+                <div class="grid sm:grid-cols-2 gap-4" id="flashcard-container">
+                    <!-- Genereras av JS -->
+                </div>
+            </section>
+        </div>
+
+        <section id="uppgifter" class="bg-brand-green text-brand-card p-8 md:p-12 rounded-[3rem] shadow-xl mt-8">
+            <div class="text-center mb-10">
+                <h2 class="text-4xl font-extrabold text-brand-beige mb-3">Uppgifter</h2>
+                <p class="text-white/80">Svara i ditt skrivhäfte. Skriv i hela meningar!</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto space-y-4">
+                <!-- Accordion A -->
+                <div>
+                    <button onclick="toggleAccordion('acc-a')" class="w-full flex justify-between items-center bg-white text-brand-green p-6 rounded-2xl shadow-sm hover:bg-brand-beige transition-colors focus:outline-none">
+                        <span class="text-xl font-bold flex items-center"><span class="bg-brand-green text-white w-8 h-8 rounded-lg inline-flex items-center justify-center mr-4 text-sm">A</span> Grunduppgifter</span>
+                        <i id="icon-a" class="fa-solid fa-chevron-down text-brand-brown transition-transform duration-300"></i>
+                    </button>
+                    <div id="acc-a" class="hidden mt-2 bg-[#143826] p-6 rounded-2xl">
+                        <ol class="list-decimal list-inside space-y-4 text-white/90">
+                            <li>Vad menas med en naturresurs? Skriv en egen förklaring och ge två exempel.</li>
+                            <li>Vilka fyra naturresurser handlar den här texten om?</li>
+                            <li>Vad är skillnaden mellan en förnybar och en icke-förnybar naturresurs? Ge ett exempel på varje.</li>
+                            <li>Ungefär hur stor del av jordens vatten är sötvatten, och var finns större delen av det?</li>
+                            <li>Vilka tre saker behövs för att man ska kunna odla?</li>
+                            <li>Ungefär hur stor del av Sveriges landareal är skog, och vilka typer av skog finns här?</li>
+                            <li>Var i världen finns barrskogarna, och var finns regnskogarna?</li>
+                            <li>Vad bryts i gruvan i Kiruna, och vad används det till?</li>
+                            <li>Vad är kobolt, och i vilket land bryts mer än hälften av världens kobolt?</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Accordion B -->
+                <div>
+                    <button onclick="toggleAccordion('acc-b')" class="w-full flex justify-between items-center bg-white text-brand-green p-6 rounded-2xl shadow-sm hover:bg-brand-beige transition-colors focus:outline-none">
+                        <span class="text-xl font-bold flex items-center"><span class="bg-brand-green text-white w-8 h-8 rounded-lg inline-flex items-center justify-center mr-4 text-sm">B</span> Samband och jämförelser</span>
+                        <i id="icon-b" class="fa-solid fa-chevron-down text-brand-brown transition-transform duration-300"></i>
+                    </button>
+                    <div id="acc-b" class="hidden mt-2 bg-[#143826] p-6 rounded-2xl">
+                        <ol class="list-decimal list-inside space-y-4 text-white/90">
+                            <li>Varför bor nästan alla människor i Egypten nära floden Nilen? Förklara i flera led.</li>
+                            <li>Bygg en orsakskedja i tre led: Skogen i Amazonas huggs ned → … → … . Skriv en mening per led.</li>
+                            <li>Jämför jordbruket i södra Sverige och i norra Sverige. Skriv en likhet, en skillnad och en förklaring till skillnaden. <br><em class="text-sm opacity-80 pl-5">*Tips: likheten handlar om vad som styr valet av gröda, inte om vilka grödor det är.*</em></li>
+                            <li>Varför har vissa länder gott om metaller medan andra saknar dem helt? Förklara med egna ord.</li>
+                            <li>Välj två av de fyra naturresurserna. Förklara vad som händer med landskapet när människor använder dem.</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Accordion C -->
+                <div>
+                    <button onclick="toggleAccordion('acc-c')" class="w-full flex justify-between items-center bg-brand-brown text-white p-6 rounded-2xl shadow-sm hover:bg-[#7a5133] transition-colors focus:outline-none border-2 border-brand-brown">
+                        <span class="text-xl font-bold flex items-center"><span class="bg-white text-brand-brown w-8 h-8 rounded-lg inline-flex items-center justify-center mr-4 text-sm">C</span> Resonemang</span>
+                        <i id="icon-c" class="fa-solid fa-chevron-down text-white transition-transform duration-300"></i>
+                    </button>
+                    <div id="acc-c" class="hidden mt-2 bg-[#143826] border-2 border-brand-brown p-6 md:p-8 rounded-2xl">
+                        <p class="mb-4 font-medium text-brand-beige">Skriv ett sammanhängande svar på 6–10 meningar på frågan nedan. Använd stödfrågorna som hjälp, men skriv i löpande text – inte som en lista.</p>
+                        
+                        <div class="bg-white p-5 rounded-xl mb-6 text-brand-green shadow-inner">
+                            <strong class="text-lg block mb-1">Fråga:</strong>
+                            <p class="italic font-medium">Vilka vinner och vilka förlorar när en naturresurs används? Välj gruvan i Kiruna eller koboltbrytningen i Kongo som exempel.</p>
+                        </div>
+
+                        <ul class="list-disc list-inside space-y-2 text-sm text-white/80 mb-6">
+                            <li>Vilka olika grupper påverkas av det du valt? Tänk på företaget, de som bor där och naturen.</li>
+                            <li>Vad vinner varje grupp, och vad förlorar den?</li>
+                            <li>Varför blir följderna olika för olika grupper?</li>
+                            <li>Vem tycker du påverkas mest, och varför? Motivera ditt svar.</li>
+                        </ul>
+
+                        <div class="bg-brand-brown/30 text-brand-beige p-3 rounded-lg text-sm font-mono text-center border border-brand-brown">
+                            Använd sambandsorden: eftersom · vilket leder till · därför · men samtidigt · till exempel
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-brand-green border-t border-white/10 text-brand-beige/60 py-8 text-center mt-auto">
+        <p class="font-medium text-brand-beige">Geografi Åk 6 - Naturresurser</p>
+        <p class="text-sm mt-2 max-w-lg mx-auto">Designad med fokus på kognitiv avlastning och aktiv inlärning.</p>
+    </footer>
+
+    <script>
+        // All begreppsdata från originaltexten
+        const begrepp = [
+            { ord: "Naturresurs", forklaring: "Något som finns i naturen och som människor använder, till exempel vatten, skog, jord och metaller." },
+            { ord: "Råvara", forklaring: "En naturresurs som används för att tillverka något, till exempel trä till en bänk." },
+            { ord: "Förnybar resurs", forklaring: "En resurs som kan bildas på nytt, till exempel skog och vatten – om vi inte tar mer än som hinner växa." },
+            { ord: "Icke-förnybar", forklaring: "En resurs som tar slut när den använts, till exempel metaller, olja och kol." },
+            { ord: "Sötvatten", forklaring: "Vatten utan havssalt, som efter rening kan användas till dricksvatten och odling." },
+            { ord: "Växtsäsong", forklaring: "Den del av året då det är varmt nog för att växter ska växa." },
+            { ord: "Jorderosion", forklaring: "När vind och regn för bort det översta jordlagret, det som växter behöver." },
+            { ord: "Avskogning", forklaring: "När skog huggs ned och marken används till något annat, till exempel bete eller odling." },
+            { ord: "Malm", forklaring: "Berg som innehåller så mycket metall att det lönar sig att bryta det." },
+            { ord: "Gruvdrift", forklaring: "Att bryta malm och mineraler ur berggrunden." },
+            { ord: "Export", forklaring: "Varor som ett land säljer till andra länder." }
+        ];
+
+        // Skapa flashcards dynamiskt
+        const container = document.getElementById('flashcard-container');
+        begrepp.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'flip-card';
+            card.innerHTML = `
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <h4 class="font-bold text-xl mb-1">${item.ord}</h4>
+                        <div class="absolute bottom-3 text-xs text-brand-brown font-bold flex items-center bg-brand-beige px-3 py-1 rounded-full"><i class="fa-solid fa-rotate mr-2"></i> Vänd</div>
+                    </div>
+                    <div class="flip-card-back">
+                        <span class="block text-sm leading-snug px-2">${item.forklaring}</span>
+                    </div>
+                </div>
+            `;
+            card.addEventListener('click', function() {
+                this.classList.toggle('flipped');
+            });
+            container.appendChild(card);
+        });
+
+        // Hantera accordions (Uppgifter)
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const iconId = id.replace('acc-', 'icon-');
+            const icon = document.getElementById(iconId);
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Läs-progression
+        let partsDone = [false, false, false, false];
+        
+        function markDone(partNumber) {
+            const index = partNumber - 1;
+            if(!partsDone[index]) {
+                partsDone[index] = true;
+                const btn = document.getElementById(`btn-del${partNumber}`);
+                
+                // Animera knappen till klar-läge
+                btn.className = "w-full py-4 mt-8 lg:mt-0 bg-brand-brown text-white font-bold rounded-2xl shadow-md transition-all flex justify-center items-center";
+                btn.innerHTML = `<i class="fa-solid fa-check-circle text-xl mr-2"></i> Klar med Del ${partNumber}`;
+                
+                updateProgressBar();
+            }
+        }
+
+        function updateProgressBar() {
+            const completed = partsDone.filter(Boolean).length;
+            const percentage = (completed / 4) * 100;
+            document.getElementById('reading-progress').style.width = percentage + '%';
+        }
+    </script>
+</body>
+</html>
